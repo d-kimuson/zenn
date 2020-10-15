@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npx zenn preview",
     "new:article": "npx zenn new:article",
-    "post": "git add . && git commit -m '[auto] upd article & blog' && gpush",
+    "post": "git add . && git commit -m '[auto] upd article & blog' && git push origin HEAD",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
