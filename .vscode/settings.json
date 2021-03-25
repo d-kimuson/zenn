@@ -1,0 +1,22 @@
+{
+  "editor.tabSize": 2,
+  "files.associations": {
+    "*.md": "markdown"
+  },
+  // prettier
+  "prettier.configPath": "./.prettierrc.js",
+  // Lint On Save
+  "editor.formatOnSave": false,
+  "[json]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[markdown]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}
