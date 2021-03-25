@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npx zenn preview",
+    "dev": "npx zenn preview",
     "new:article": "npx zenn new:article",
-    "post": "git add . && git commit -m '[auto] upd article & books' && git push origin HEAD",
+    "deploy": "git add . && git commit -m '[auto] upd article & books' && git push origin HEAD",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
