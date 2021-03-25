@@ -4923,7 +4923,7 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zenn-cli@^0.1.49:
+zenn-cli@^0.1.77:
   version "0.1.77"
   resolved "https://registry.yarnpkg.com/zenn-cli/-/zenn-cli-0.1.77.tgz#411e70246c5ecad8f3777aa6f3b11b90ce80756b"
   integrity sha512-QtwEbmNkFlAj61/TdNZVUJS0y6LzPLx+NxhZU5uyv7dp+8WModHOmHSltutxkOVhTq/hTtIrt2MdSEHBayzgiQ==

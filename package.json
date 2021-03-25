@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "npx zenn preview",
-    "new:article": "npx zenn new:article",
+    "new:article": "bin/new.sh",
     "deploy": "git add . && git commit -m '[auto] upd article & books' && git push origin HEAD",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,6 +13,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "zenn-cli": "^0.1.49"
+    "zenn-cli": "^0.1.77"
   }
 }
