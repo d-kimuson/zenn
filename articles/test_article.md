@@ -1,5 +1,6 @@
 ---
 title: "This is test article"
+slug: "28d7dfd2cb1ab77015d0"
 emoji: "🎉"
 type: "tech"
 topics: ["javascript"]

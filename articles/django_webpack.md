@@ -1,5 +1,6 @@
 ---
 title: "Djangoとwebpackを連携して､ モダンなフロントエンド環境を構築する"
+slug: "b2a96d7c8729659379d3"
 emoji: "📚"
 type: "tech"
 topics: ["python", "django", "webpack"]
@@ -7,8 +8,6 @@ published: true
 ---
 
 ## まえがき
-
-Zenn 初投稿です｡ 筆者は情報系の学部生で､ Webに興味があるので色々勉強中の身です｡
 
 今回は Zenn に興味があったので､ アカウントとリポジトリを作ってみて､ せっかくだからなにか書いてみようかなーと思って書いてました｡
 
