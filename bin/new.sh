@@ -1,4 +1,7 @@
 #!/bin/bash
 
-printf "Input slug > "; read slug
-npx zenn new:article --slug $slug --type tech
+lower=$(uuidgen | tr '[:upper:]' '[:lower:]')
+filename=$(npx zenn new:article --slug $lower --type tech --machine-readable)
+printf "Summary File Name >> "; read new_filename;
+
+mv articles/$filename articles/${new_filename}.md
