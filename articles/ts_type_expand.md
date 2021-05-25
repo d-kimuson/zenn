@@ -1,73 +1,60 @@
 ---
 title: "TypeScript の型情報を展開して見やすくする VSCode 拡張機能を作った"
 emoji: "🌟"
-type: "tech" # tech: 技術記事 / idea: アイデア
-topics: []
-published: false
-slug: 5ff64b17-108e-4c7e-b2c3-7465a8982f10
+type: "tech"
+topics: ["TypeScript"]
+published: true
 ---
 
-タイトル通りなんですが、TypeScript の読みにくい型を展開して読みやすくする拡張機能を作りました
-
-画像
-
-こういう人が読めないような型を VSCode 上で必要なだけ展開して確認することができるようにするもです
-
-画像
-
-GraphQL や OpenAPI 等から自動生成した型や、型計算を重ねて読みづらくなった型をシンプルに理解できます
-
-ジェネリクスを使った複雑な型や、Pick, Extract 等も展開することができます
+TypeScript の読みにくい型を展開して読みやすくする拡張機能を作りました！
 
 ## 動機
 
-TS を書いてると型が読めないから、変数に束縛して補完で探ってが必要なことが度々あって、展開した型をみれるなにかがないかなーと常々思っていました
+TS を書いてると型が読めないから、変数に束縛して補完で探ってが必要なことが度々あって、展開した型をみれるなにかがないかなーと思っていました
 
-TypeScript の [compilerAPI](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API) なるものを知ったので、いい感じに型を抜き出して VSCode のツリービューに渡せば良いじゃんって思って調べてみたら同じ試みをされてる方がいらっしゃったのですが、残念ながら断念されてました
+TypeScript の [CompilerAPI](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API) なるものを知ったので、いい感じに型を抜き出して VSCode のツリービューに渡せば良いじゃんって思って調べてみたら同じ試みをされてる方がいらっしゃったのですが、残念ながら断念されてました
 
 [type-explorer がポシャった話 - sisisin のブログ](https://sisisin.hateblo.jp/entry/2020/09/12/174228)
 
 端的に言うと、compilerAPI の API が充実してないから逐次展開するみたいなことはできないそうで
 
-ただ、拡張機能開発もやってみたかったというのもあったので、とりあえずダメ元で作ってみたら割と良い感じになったので公開します
+ただ、拡張機能開発もやってみたかったというのもあったので、とりあえずダメ元で作ってみたら割と良い感じになったので公開しました
 
-## どうやったの
+## 作ったもの
 
-[compilerAPI](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API) で VSCode 上で選択しているノードの型情報を取り出して、ツリービューに渡しています
+TypeScript の型定義を展開できる拡張機能です
 
-型情報の抜き出しは [Using the Compiler API · microsoft/TypeScript Wiki · GitHub](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API#using-the-type-checker)
+[ts-type-expand - Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=kimuson.ts-type-expand) からインストールできます
 
-この辺を参考にしました
+![](https://storage.googleapis.com/zenn-user-upload/ic34bq803qbhg19sxef7qmamdnxq)
 
-基本的に `Node` が渡ってくるので、そこからコネコネして必要な情報を受け取り、展開可能な
+こんな感じで読みにくい型を VSCode 上で必要なだけ展開して確認することができます
 
-Node
+画像は GraphQL スキーマから自動生成したものなので極端な例ですが、変数をホバーしてみたら `Partial<User>` って書いてあったけど `User` ってなんやねん、みたいなことは割とあると思うのでそういうときに使えます
 
-が、選択しているノードごとに型のとり方が異なる + 一部 compilerAPI に必要な型定義が提供されていない問題があって苦戦しました
+対応している型については、型の解決は CompilerAPI がしてくれているので TS がサポートしていれば全て展開できるはずです
 
-VSCode から受け取った時点では `Node` で、ここからプロパティがほしいときは
+リポジトリは [d-kimuson/ts-type-expand: vscode extension for expand type of typescript](https://github.com/d-kimuson/ts-type-expand) です
 
-compilerAPI にはざっくりと
+## How To
 
-- Node (ソースコードから取得したやつ)
-- Simbol
-- Type
+[CompilerAPI](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API) で VSCode 上で選択しているノードの型情報を取り出して、ツリービューに渡しています
 
-の 3 つが登場しますが、型定義
+CompilerAPI については
 
-- 宣言から型を取りたい → Node => Type
-- Type からプロパティを取りたい → Symbol で取得したプロパティを型に変換
-- 変数から型を取りたい → Node → 初期化用 Node を取得 →
+- [Using the Compiler API · microsoft/TypeScript Wiki · GitHub](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API#using-the-type-checker)
+- [TypeScript の compiler API をいじる - asterisc](http://akito0107.hatenablog.com/entry/2018/12/23/020323)
+- [TypeScript Compiler API の基本的な使い方、コード例と作ってみたもの \| Web 猫](https://katashin.info/2018/02/24/221)
 
-型は
+この辺りの資料を参考にさせて頂いて基本的な使い方を覚えつつ、あとは手探りで型を取り出して行きました
+
+Union 型を受け取るときに必要な型が提供されてなかった(実態は存在するけど型定義がなかったので手探りでプロパティを見つけて使うしかなかった)りとか、あまり資料が充実していなくて欲しい型の取り方が分からなかったりと結構大変でしたが、愚直にコネコネして取れるようにしました
 
 ## Tree View API
 
-ツリービューの各要素は `vscode.TreeItem` で、親クラスのコンストラクタに `vscode.TreeItemCollapsibleState.Collapsed` or `vscode.TreeItemCollapsibleState.None` を渡すと
+取り出した型は [VSCode の TreeView](https://code.visualstudio.com/api/extension-guides/tree-view) で展開しています
 
-拡張機能が有効になったタイミングで `TreeDataProvider.getChildren` が呼ばれます
-
-こちらは結構 API がシンプルだったので、かんたんに作れました
+こちらは結構 API がシンプルだったので、あまり苦労せずに作れました
 
 ただ、型を広げたいシチュエーションって
 
@@ -76,25 +63,19 @@ compilerAPI にはざっくりと
 - Enum の候補をみたい
 - 関数の展開(引数と戻り値)
 
-とか、結構パターンが有るのに、見た目的にはすべて折りたたまれているものを展開するだけなのでどう区別するか
+等、結構パターンが有るのに見た目的にはすべて折りたたまれているものを展開するだけなので、使ってみると「展開できることは把握できるが、なにを展開できるのか・しているのかが分からない」って感じで体験が微妙でした
 
-ユーザーが展開できることは把握できるが、なにを展開できるのか・しているのかが分からない
+少しいじってみたら `TreeItem` に `description` を設定してやると
 
-とりあえず `TreeItem` に `description` を設定してやると
+![](https://storage.googleapis.com/zenn-user-upload/kfeg8zn69gg1qv3ra6c706l653et)
 
-画像
-
-こんな感じで、付随する情報を出せるので、どういう意味合いで展開できるのかが分かるようにしました
+こんな感じで、付随する情報を出せることが分かったので、どういう意味合いで展開できるのか把握できるようにしました
 
 ## 詰まったこと
 
-### ファイルの変更を反映できない
-
-watch するようにして、対応しました
-
 ### 再帰的な型を使えない
 
-もともと、compilerAPI でコネコネして完全に展開された型をツリービューに渡してたのですが、再帰的な型だと当たり前ですが無限ループに入ってしまいます
+最初は CompilerAPI でコネコネして完全に展開された型をツリービューに渡してたのですが、再帰的な型だと当たり前ですが無限ループに入ってしまいます
 
 ```ts
 type User = {
@@ -102,7 +83,7 @@ type User = {
 }
 ```
 
-パフォーマンス的にも逐一展開したほうが無駄な計算をしなくてすむだろうしってことで、ビューの展開処理のタイミングで展開することにしました
+パフォーマンス的にも逐一展開したほうが無駄な計算をしなくて済むしってことで、ツリービューの展開処理のタイミングで必要なプロパティだけ取得する形に修正しました
 
 ### 公開すると手元で動いたのに、動かなくなる
 
@@ -113,13 +94,13 @@ type Foo = Array<string>
 type Bar = Pick<Hoge, "key1", "key2">
 ```
 
-こういうの
+こういうのが軒並みダメで。
 
 結論から言うと `.vscodeignore` で必要なファイルを削ってしまっていたのが原因でした
 
-`$ yo code` の TypeScript の雛形をほぼそのまま使ったんですが、`.vscodeignore` で `*.ts` を送らないようにしていたことが原因でした
+`$ yo code` で作成される TypeScript の雛形をほぼそのまま使ったんですが、`.vscodeignore` で `*.ts` を送らないような初期設定になってました
 
-一般的な拡張だと js だけ送れば良いので親切に指定してくれていたみたいですが、今回の場合は `compilerAPI` が型を解釈するタイミングで node_modules 下にある組み込みの型定義を参照するので、`ignore` から外す必要がありました
+一般的な拡張だと JS だけ送れば良いので親切に指定してくれていたみたいですが、今回の場合は `CompilerAPI` が型を解釈する時に node_modules 下にある組み込みの型定義を参照するので、`ignore` から外す必要がありました
 
 ```diff:.gitignore
  .vscode/**
@@ -136,33 +117,22 @@ type Bar = Pick<Hoge, "key1", "key2">
 +src/**/*.ts
 ```
 
-これだと一部無駄な型が送られてしまうのでなんとかしたいところ
-
-否定オプションが使えるなら typescript だけ外したほうが良さそう
-
 ## 今後やりたいこと
 
-現状 `User[]` のときに `User` を展開することができないので、ここを展開できるようにしたいですね
+作ってみたら結構便利で、自分で使いたいので機能を充実させていこうと思っています
 
-あと、選択先(ユーザーが選択する要素)が少ないので、増やしたいです
+現状、配列の型展開(`User[]` のときに `User` を展開)ができないので、ここを展開できるようにしたいのと、カーソルの選択先が少ないので、増やしたいです
 
-## おまけ
+一番多いユースケースは、「使用されている変数から型情報を取り出して展開する」だと思いますが、現状だと変数宣言からしか展開できないのでこの辺をサポートしつつ、関数の引数とか、対応する場所を増やしたいです
 
-この型にいれると展開済みの型みれるみたいだよ
+拙いですが、よかったら使ってみてください！
 
----
-
-```ts
-export type Node = {
-  id: Scalars["ID"]
-  parent?: Maybe<Node>
-  children: Array<Node>
-  internal: Internal
-}
-```
-
-自分を参照するような型はダメっぽい？
+[ts-type-expand - Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=kimuson.ts-type-expand)
 
 ## 参考
 
+- [type-explorer という TypeScript の型を展開・閲覧出来る VSCode 拡張を作っている - sisisin のブログ](https://sisisin.hateblo.jp/entry/2020/08/12/005305)
+- [TypeScript の AST・コンパイラ API とお付き合い - Qiita](https://qiita.com/sisisin/items/eac8381563097334c4e2)
 - [Using the Compiler API · microsoft/TypeScript Wiki · GitHub](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API)
+- [TypeScript の compiler API をいじる - asterisc](http://akito0107.hatenablog.com/entry/2018/12/23/020323)
+- [TypeScript Compiler API の基本的な使い方、コード例と作ってみたもの \| Web 猫](https://katashin.info/2018/02/24/221)
