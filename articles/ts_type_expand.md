@@ -129,6 +129,12 @@ type Bar = Pick<Hoge, "key1", "key2">
 
 [ts-type-expand - Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=kimuson.ts-type-expand)
 
+※追記
+
+バージョンアップで、変数や関数呼び出し、引数等取れそうなところを選択すればほぼ型が取れるようになりました
+
+定義や変数宣言まで戻る必要がないので、使い勝手がだいぶ向上しました 😎
+
 ## 参考
 
 - [type-explorer という TypeScript の型を展開・閲覧出来る VSCode 拡張を作っている - sisisin のブログ](https://sisisin.hateblo.jp/entry/2020/08/12/005305)
