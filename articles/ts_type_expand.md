@@ -26,7 +26,7 @@ TypeScript の型定義を展開できる拡張機能です
 
 [ts-type-expand - Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=kimuson.ts-type-expand) からインストールできます
 
-![](https://storage.googleapis.com/zenn-user-upload/ic34bq803qbhg19sxef7qmamdnxq)
+![](https://storage.googleapis.com/zenn-user-upload/8kr3n3tx3ymlfxzg992z1u8ud3kw)
 
 こんな感じで読みにくい型を VSCode 上で必要なだけ展開して確認することができます
 
