@@ -127,6 +127,8 @@ type Bar = Pick<Hoge, "key1", "key2">
 
 ※ バージョンアップで、変数や関数呼び出し、引数等取れそうなところを選択すればほぼ型が取れるようになりました
 
+※ 配列の型展開もサポートしました
+
 拙いですが、よかったら使ってみてください！
 
 [ts-type-expand - Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=kimuson.ts-type-expand)
