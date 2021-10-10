@@ -2,8 +2,8 @@
 title: "Vuex 4 に型付けするための vuex-typing を作った"
 emoji: "🍣"
 type: "tech" # tech: 技術記事 / idea: アイデア
-topics: ["TypeScript", "Vuex"]
-published: false
+topics: ["TypeScript", "Vuex", "Vue.js"]
+published: true
 ---
 
 Vuex を仕事で使う機会がありそうなので勉強していたんですが、型付けのサポートが不十分で不満があったので型付けするためのヘルパーライブラリを作りました
