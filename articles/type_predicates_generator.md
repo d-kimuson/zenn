@@ -2,11 +2,11 @@
 title: "TypeScriptの型定義から型ガードを自動生成する type-predicates-generator の紹介"
 emoji: "📘"
 type: "tech" # tech: 技術記事 / idea: アイデア
-topics: ["TypeScript"]
-published: false
+topics: ["TypeScript", "type"]
+published: true
 ---
 
-TypeScript の型定義からユーザー定義型ガード(type predicate)とアサーション関数を自動生成するツールを作ったので紹介します！
+TypeScript の型定義からユーザー定義型ガード(type predicate)とアサーション関数を自動生成するツールを作ったので紹介します！間違った実装を書いてしまう可能性があるユーザー定義型ガードを自動生成することで、安全かつ手軽にアプリケーションの型を守ることができます！
 
 https://github.com/d-kimuson/type-predicates-generator
 
@@ -27,7 +27,7 @@ task /* :task */ // 実際には any 以外の値でも Task 型についてし�
 
 型が実態と異なっているとアプリケーションの安全性の意味でも、開発体験の意味でも TypeScript によって得られる利点が減ってしまうので望ましくありません
 
-こういうときに、[type predicate](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) (`v is <型>`) を使うことで、ユーザー定義の関数使って型ガードを行い、安全に型付けすることができます
+こういうときに [type predicate](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) (`v is <型>`) を使うことで、ユーザー定義の関数使って型ガードを行い、安全に型付けすることができます
 
 ```ts:type_predicateのサンプル
 function isTask(value: unknown): value is Task {
@@ -49,16 +49,14 @@ if (isTask(task)) {
 }
 ```
 
-これなら as や型注釈で型をつけるより安全です
+これなら as や型注釈で型をつけるより安全ですが TypeScript はこの type predicate 関数の実装が正しいかについては一切面倒を見てくれません
 
-しかし、type predicate を使っていても TypeScript はこの type predicate 関数の中身の実装が正しいかには一切面倒を見てくれないので実装が正しくない場合には同じく危険な状態になります
-
-極論ですが、`const isTask = (v: unknown) v is Task => true` とかになっていても特に怒られずに型を Task 型に絞り込んでしまいます
+極論ですが、`const isTask = (v: unknown) v is Task => true` 等のめちゃくちゃな実装でも特に怒られずに型を Task 型に絞り込んでしまいます
 
 もちろんこんな実装を書くことはないと思いますが
 
-- 書いた当時は正しい実装だったが `Task` 型が変更されて isTask が不適切な実装になってしまうケース
-- 単純に実装ミスをするケース (`isTask` を見ての通りオブジェクトのプロパティチェック等をちゃんと書くのは結構複雑で、他にも共用体型や配列の子要素チェックなどもあるから十分ミスが入り込める)
+- 書いた当時は正しい実装だったが `Task` 型が変更されて isTask が不適切な実装になってしまうケース (プロパティの追加)
+- 単純に実装ミスをするケース (`isTask` を見ての通りオブジェクトのプロパティチェック等をちゃんと書くのは結構複雑で、他にも共用体型や配列の子要素チェックなどもあるので十分ミスが入り込める)
 
 等によって不適切なランタイムチェック関数が入ることもあります
 
@@ -118,7 +116,7 @@ export const isTask = (arg_0: unknown): arg_0 is Task =>
  })
 ```
 
-これで安全かつ手軽におかしな値が来てないかチェックできるようになりました
+これで安全かつ手軽に外部から来た値に型をつけることができるようになりました
 
 `-a` オプションを指定すれば、加えて [assertion function](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions) も自動生成することができます。上のようなケースなら assertion function を使うほうが適切でしょう
 
@@ -186,6 +184,8 @@ export const isPartialTask = (arg_0: unknown): arg_0 is PartialTask =>
 フロントエンドでは openapi-generator, aspida 等のツールでレスポンス型を自動生成していることも多いと思います
 
 これらを直接 type-predicates-generator の生成対象に含めることも可能ですが、型定義が膨大になりがちで生成に時間がかかってしまうので、使うものだけ再エクスポートすることもできます
+
+※ と言いつつ個人のブログで使用している [GraphQL Code Generator](https://www.graphql-code-generator.com/) で生成した4000行レベルの型定義で試しても5秒超くらいだったのであまり気にしなくても良いかもしれません
 
 このユースケースのため型宣言だけではなく再エクスポートされた型定義も生成対象に含めています
 
