@@ -6,11 +6,11 @@ topics: ["TypeScript"]
 published: false
 ---
 
-型定義からユーザー定義型ガード(type predicate)とアサーション関数を自動生成するツールを作ったので紹介します
+TypeScript の型定義からユーザー定義型ガード(type predicate)とアサーション関数を自動生成するツールを作ったので紹介します！
 
 https://github.com/d-kimuson/type-predicates-generator
 
-## type predicate の問題点
+## type predicate と問題点
 
 API や JSON のパース等で外部からやってきた値に型付けをするときや型定義の存在しないライブラリを使用する時、型注釈や as をそのまま使ってしまうと想定していない値がきたときに気付くことができません
 
@@ -25,7 +25,9 @@ const task: Task = JSON.parse('...') // any 型を返す関数に対して注釈
 task /* :task */ // 実際には any 以外の値でも Task 型についてしまう
 ```
 
-こういうときに、[type predicate](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) を使うことで、ユーザー定義の関数使って型ガードを行うことができます
+型が実態と異なっているとアプリケーションの安全性の意味でも、開発体験の意味でも TypeScript によって得られる利点が減ってしまうので望ましくありません
+
+こういうときに、[type predicate](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) (`v is <型>`) を使うことで、ユーザー定義の関数使って型ガードを行い、安全に型付けすることができます
 
 ```ts:type_predicateのサンプル
 function isTask(value: unknown): value is Task {
@@ -49,14 +51,14 @@ if (isTask(task)) {
 
 これなら as や型注釈で型をつけるより安全です
 
-ただし、TypeScript はこの type predicate 関数の中身の面倒はみてくれません
+しかし、type predicate を使っていても TypeScript はこの type predicate 関数の中身の実装が正しいかには一切面倒を見てくれないので実装が正しくない場合には同じく危険な状態になります
 
-極論ですが、`const isTask = (v: unknown) v is Task => true` とかになっていても特に怒られずに型を Task 型に絞り込んでしまうわけです。
+極論ですが、`const isTask = (v: unknown) v is Task => true` とかになっていても特に怒られずに型を Task 型に絞り込んでしまいます
 
 もちろんこんな実装を書くことはないと思いますが
 
 - 書いた当時は正しい実装だったが `Task` 型が変更されて isTask が不適切な実装になってしまうケース
-- 単純に実装ミスをするケース (isTask を見ての通りオブジェクトのプロパティチェック等をちゃんと書くのは結構複雑で、他にも共用体型や配列の子要素チェックなどもあるから十分ミスが入り込める)
+- 単純に実装ミスをするケース (`isTask` を見ての通りオブジェクトのプロパティチェック等をちゃんと書くのは結構複雑で、他にも共用体型や配列の子要素チェックなどもあるから十分ミスが入り込める)
 
 等によって不適切なランタイムチェック関数が入ることもあります
 
@@ -183,19 +185,19 @@ export const isPartialTask = (arg_0: unknown): arg_0 is PartialTask =>
 
 フロントエンドでは openapi-generator, aspida 等のツールでレスポンス型を自動生成していることも多いと思います
 
-これらを直接 type-predicates-generator の生成対象に含めることも可能ですが、型定義が膨大になりがちで生成に時間がかかってしまうので、使うものだけ再エクスポートすることもできます。
+これらを直接 type-predicates-generator の生成対象に含めることも可能ですが、型定義が膨大になりがちで生成に時間がかかってしまうので、使うものだけ再エクスポートすることもできます
 
-このユースケースのため型宣言だけではなく re-export も生成対象に含めています
+このユースケースのため型宣言だけではなく再エクスポートされた型定義も生成対象に含めています
 
 ```ts
 export { Category } from "../typescript-axios/api"
 ```
 
-リポジトリの [example](https://github.com/d-kimuson/type-predicates-generator/tree/main/example) に具体例があります。[re-export.ts](https://github.com/d-kimuson/type-predicates-generator/blob/main/example/types/re-export.ts#L4~L11) によって再エクスポートされた型定義から [type-predicate.ts](https://github.com/d-kimuson/type-predicates-generator/blob/main/example/type-predicates.ts#L100~L124) に関数が生成されているのがわかります。
+リポジトリの [example](https://github.com/d-kimuson/type-predicates-generator/tree/main/example) に具体例があります。[re-export.ts](https://github.com/d-kimuson/type-predicates-generator/blob/main/example/types/re-export.ts#L4~L11) によって再エクスポートされた型定義から [type-predicate.ts](https://github.com/d-kimuson/type-predicates-generator/blob/main/example/type-predicates.ts#L100~L124) に関数が生成されているのがわかります
 
 ## どうやって実装しているのか？
 
-Compiler API で Glob 指定されたファイルから型情報を抜き出して自動生成しています。
+Compiler API で Glob 指定されたファイルから型情報を抜き出して自動生成しています
 
 Compiler API の詳細は他の記事に譲りますが
 
@@ -233,7 +235,7 @@ if (isRight(result)) {
 }
 ```
 
-io-ts 独自の記法でランタイムでチェックする型を定義し、そこから TypeScript の型を受け取る形になっています(`t.TypeOf(typeof Task)`)。
+io-ts 独自の記法でランタイムでチェックする型を定義し、そこから TypeScript の型を受け取る形になっています(`t.TypeOf(typeof Task)`)
 
 とても良いライブラリですが、型定義を TypeScript の型で書けないので
 
