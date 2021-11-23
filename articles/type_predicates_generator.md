@@ -37,9 +37,9 @@ function isTask(value: unknown): value is Task {
     'id' in value &&
     typeof value.id === 'number' &&
     'title' in value &&
-    typeof value.title === 'number' &&
+    typeof value.title === 'string' &&
     'description' in value &&
-    typeof value.description === 'number'
+    typeof value.description === 'string'
   )
 }
 
