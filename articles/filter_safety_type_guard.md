@@ -3,7 +3,7 @@ title: "配列の filter で直和型を絞り込むときのユーザー定義�
 emoji: "🐕"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["TypeScript"]
-published: false
+published: true
 ---
 
 ## 配列の filter メソッドでは直和型が絞り込まれない
@@ -39,7 +39,7 @@ const usersGuarded /*: User[] */ = maybeUsers.filter(
 
 ただし、ユーザー定義型ガードはガードの実装が正しいかを型チェックで検証できないので、型安全性の意味で危険なものです
 
-例えばうっかり `=== undefined` にしてしまったり
+例えばうっかり `=== undefined` にしてしまうと
 
 ```ts
 const usersGuarded /*: User[] */ = maybeUsers.filter(
@@ -64,7 +64,7 @@ const usersGuarded /*: User[] */ = maybeUsers.filter(
 )
 ```
 
-これは誤ったユーザー定義型ガードの実装になります(`OtherUser` である可能性が不当に除かれてしまう)が、型チェックでこれを検知することはできません
+これは誤ったユーザー定義型ガードの実装になります(`OtherUser` である可能性が不当に除かれてしまいます)が、型チェックでこれを検知することはできません
 
 ## `Exclude<typeoof arg, undefined>` で書く
 
@@ -79,7 +79,7 @@ const usersGuarded /*: User[] */ = maybeUsers.filter(
 )
 ```
 
-この書き方だと引数の型から `undefined` を除いた型に絞り込むという記述になるのでより安全かつ実態に即しています
+この書き方だと引数の型から `undefined` を除いた型になるので、`maybeUser` の型が変更されても伴って型ガードされる型も変わるので安全ですし、実態に即しています
 
 やや冗長ですが、これで将来的な変更で型ガードの実装が壊れることは防げるようになりました
 
@@ -132,13 +132,13 @@ const usersGuarded /*: User[] */ = maybeUsers.filter(
 )
 ```
 
-こんな感じで、型ガードされた値と exclude を返してもらう感じです
+こんな感じで、型ガードされた値と、除く側を表す第二引数の exclude を返してもらいます
 
 これでフロー解析でガードできるものは filter でも安全にガードできるようになりました
 
-(filterGuard の実装が間違ってたら壊れるのは変わらずですが、危険性がここに閉じてるので必要になるたびにユーザー定義型ガードを書くより安全です)
+(filterGuard の実装が間違ってたら壊れるのは変わらずですが、実装ミスの危険性がここに閉じてるので必要になるたびにユーザー定義型ガードを書くより安全だと思います)
 
-まあインタフェースがわかりにくいのはそうなので、型安全性と天秤にかけて使いたければって感じになります
+インタフェースがわかりにくいのはそうなので、型安全性と天秤にかけて使いたければという感じになります
 
 ## 番外編: flatMap を使う
 
@@ -149,6 +149,8 @@ const usersGuarded /*: User[] */ = maybeUsers.flatMap((maybeUser) =>
   maybeUser === undefined ? [] : [maybeUser]
 )
 ```
+
+ユーティリティもいらないし冗長でもないし flatMap でよくない?って話ですが、flatMap は filter よりパフォーマンスが悪いので、データ数によっては望ましくないため、用途に応じて使い分けるのが良いと思います
 
 ## まとめ
 
