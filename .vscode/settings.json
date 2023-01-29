@@ -19,5 +19,5 @@
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "cSpell.words": ["typeof"]
+  "cSpell.words": ["compilerapi", "pathpida", "typeof"]
 }
