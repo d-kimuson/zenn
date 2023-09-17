@@ -2,7 +2,7 @@
 title: "commitizen でチームの規約を作って対話型でコミットメッセージを作ると良い感じ"
 emoji: "🔥"
 type: "tech" # tech: 技術記事 / idea: アイデア
-topics: []
+topics: ["commitizen"]
 published: true
 ---
 
