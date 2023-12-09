@@ -20,10 +20,18 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "cSpell.words": [
+    "BUILDKIT",
     "compilerapi",
+    "direnv",
+    "envrc",
+    "healthcheck",
+    "hlocalhost",
+    "HOGE",
+    "initdb",
     "lefthook",
     "pathpida",
     "preinstall",
-    "typeof"
+    "typeof",
+    "uroot"
   ]
 }
