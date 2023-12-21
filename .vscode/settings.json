@@ -24,6 +24,7 @@
     "compilerapi",
     "direnv",
     "envrc",
+    "githubactions",
     "healthcheck",
     "hlocalhost",
     "HOGE",
