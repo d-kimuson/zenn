@@ -3,7 +3,7 @@ title: "GitHub Actions ですべての CI の完了にフックして処理を�
 emoji: "🎃"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["githubactions"]
-published: false
+published: true
 ---
 
 この記事は[株式会社エス・エム・エス Advent Calendar 2023](https://qiita.com/advent-calendar/2023/bm-sms)の22日目の記事です。
