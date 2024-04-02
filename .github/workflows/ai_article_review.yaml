@@ -1,0 +1,87 @@
+name: AI Article Review
+
+on:
+  pull_request:
+    branches:
+      - articles/**
+    types: [opened, synchronize, reopened]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          sparse-checkout: "articles/**"
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v35
+        with:
+          files: articles/**
+
+      - name: Review articles
+        if: steps.changed-files.outputs.any_changed == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            if [[ $file == articles/* ]]; then
+              content=$(cat $file)
+              word_count=$(echo "$content" | wc -w)
+              if [ "$word_count" -gt 100 ]; then
+                prompt="以下は技術ブログ記事の原稿です。この記事をレビューし、以下の項目についてコメントを JSON 形式で出力してください。
+
+                - 要約: 記事の概要を簡潔にまとめてください。
+                - 構成: 記事の全体的な構成について、改善点や提案があればコメントしてください。
+                - 細部指摘: 記事の細部について、気になる点や修正すべき点があれば行数とともにコメントしてください。
+
+                出力は以下の JSON 形式に従ってください。
+                {
+                  \"summary\": \"記事の要約\",
+                  \"structure\": \"構成に関するコメント\",
+                  \"details\": [
+                    {
+                      \"line\": 行数,
+                      \"comment\": \"指摘内容\"
+                    },
+                    ...
+                  ]
+                }
+
+                文字数を節約するため、簡潔なレビューを心がけてください。
+
+                記事の原稿:
+                $content"
+
+                response=$(curl -s -H "Content-Type: application/json" -H "Authorization: Bearer $ANTHROPIC_API_KEY" -d "{\"prompt\": \"$prompt\", \"model\": \"claude-3-opus-20240229\", \"max_tokens_to_sample\": 1000}" https://api.anthropic.com/v1/complete)
+                review=$(echo $response | jq -r '.completion')
+
+                echo "$review" > review.json
+
+                summary=$(jq -r '.summary' review.json)
+                structure=$(jq -r '.structure' review.json)
+                details=$(jq -c '.details[]' review.json)
+
+                gh pr comment $PR_URL --body "## 記事の要約
+                $summary
+
+                ## 構成に関するコメント
+                $structure"
+
+                for detail in $details; do
+                  line=$(echo $detail | jq -r '.line')
+                  comment=$(echo $detail | jq -r '.comment')
+                  gh pr review $PR_URL --body "$comment" --comment --path $file --line $line
+                done
+
+                gh pr edit $PR_URL --body "$(gh pr view $PR_URL --json body --jq '.body') 
+
+                ## 記事レビュー
+                $summary
+
+                $structure"
+              fi
+            fi
+          done
