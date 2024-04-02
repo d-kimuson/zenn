@@ -4,7 +4,7 @@
     "*.md": "markdown"
   },
   // prettier
-  "prettier.configPath": "./.prettierrc.js",
+  "prettier.configPath": "./.prettierrc.mjs",
   // Lint On Save
   "editor.formatOnSave": false,
   "[json]": {
