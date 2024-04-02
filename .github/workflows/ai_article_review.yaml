@@ -28,6 +28,8 @@ jobs:
         run: |
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             if [[ $file == articles/* ]]; then
+              echo "$file のレビューを行います。"
+
               content=$(cat $file)
               word_count=$(echo "$content" | wc -w)
               if [ "$word_count" -gt 100 ]; then
@@ -59,6 +61,7 @@ jobs:
                 review=$(echo $response | jq -r '.completion')
 
                 echo "$review" > review.json
+                cat review.json
 
                 summary=$(jq -r '.summary' review.json)
                 structure=$(jq -r '.structure' review.json)
