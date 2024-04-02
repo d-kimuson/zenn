@@ -2,18 +2,18 @@ name: AI Article Review
 
 on:
   pull_request:
-    branches:
-      - articles/**
     types: [opened, synchronize, reopened]
 
 jobs:
   review:
     runs-on: ubuntu-latest
+    if: startsWith(github.head_ref, 'articles')
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
-          sparse-checkout: "articles/**"
+          sparse-checkout: |
+            articles
 
       - name: Get changed files
         id: changed-files
