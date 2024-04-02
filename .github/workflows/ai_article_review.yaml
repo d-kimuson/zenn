@@ -9,6 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     if: startsWith(github.head_ref, 'articles')
 
+    env:
+      GH_TOKEN: ${{ github.token }}
+
     steps:
       - uses: actions/checkout@v4
 
