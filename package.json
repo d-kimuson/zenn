@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npx zenn preview",
+    "dev": "zenn preview",
     "new:article": "bin/new.sh",
     "deploy": "git add . && git commit -m '[auto] upd article & books' && git push origin HEAD",
     "lint": "prettier './**/*.{json,md}' --check",
@@ -15,9 +15,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "zenn-cli": "^0.1.77"
+    "zenn-cli": "^0.1.153"
   },
   "devDependencies": {
-    "prettier": "^2.2.1"
+    "prettier": "^2.8.8"
   }
 }
