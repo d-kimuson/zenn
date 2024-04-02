@@ -72,24 +72,13 @@ jobs:
                 structure=$(jq -r '.structure' review.json)
                 details=$(jq -c '.details[]' review.json)
 
-                gh pr comment $PR_URL --body "## 記事の要約
-                $summary
-
-                ## 構成に関するコメント
-                $structure"
+                gh pr comment $PR_URL --body "$structure"
 
                 for detail in $details; do
                   line=$(echo $detail | jq -r '.line')
                   comment=$(echo $detail | jq -r '.comment')
                   gh pr review $PR_URL --body "$comment" --comment --path $file --line $line
                 done
-
-                gh pr edit $PR_URL --body "$(gh pr view $PR_URL --json body --jq '.body') 
-
-                ## 記事レビュー
-                $summary
-
-                $structure"
               else
                 echo "記事の文字数が 100 未満のため、レビューを行いません。"
               fi
