@@ -71,7 +71,7 @@ const main = async () => {
   const filePath = args[0]
 
   const content = await readFile(filePath, "utf-8")
-  console.log(await reviewArticle(content))
+  console.log(JSON.stringify(await reviewArticle(content), null, 2))
 }
 
 await main().catch(console.error)
