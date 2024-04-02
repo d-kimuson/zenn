@@ -33,32 +33,7 @@ jobs:
               content=$(cat $file)
               word_count=$(echo "$content" | wc -w)
               if [ "$word_count" -gt 100 ]; then
-                prompt="以下は技術ブログ記事の原稿です。この記事をレビューし、以下の項目についてコメントを JSON 形式で出力してください。
-
-                - 要約: 記事の概要を簡潔にまとめてください。
-                - 構成: 記事の全体的な構成について、改善点や提案があればコメントしてください。
-                - 細部指摘: 記事の細部について、気になる点や修正すべき点があれば行数とともにコメントしてください。
-
-                出力は以下の JSON 形式に従ってください。
-                {
-                  \"summary\": \"記事の要約\",
-                  \"structure\": \"構成に関するコメント\",
-                  \"details\": [
-                    {
-                      \"line\": 行数,
-                      \"comment\": \"指摘内容\"
-                    },
-                    ...
-                  ]
-                }
-
-                文字数を節約するため、簡潔なレビューを心がけてください。
-
-                記事の原稿:
-                $content"
-
-                response=$(curl -s -H "Content-Type: application/json" -H "Authorization: Bearer $ANTHROPIC_API_KEY" -d "{\"prompt\": \"$prompt\", \"model\": \"claude-3-opus-20240229\", \"max_tokens_to_sample\": 1000}" https://api.anthropic.com/v1/complete)
-                review=$(echo $response | jq -r '.completion')
+                review=$(node ./scripts/claude_review.mjs $file)
 
                 echo "$review" > review.json
                 cat review.json

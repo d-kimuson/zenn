@@ -19,6 +19,7 @@
     "fix": "pnpm /^fix:.*/",
     "fix:prettier": "pnpm run:prettier --write",
     "run:prettier": "prettier . --no-error-on-unmatched-pattern --cache",
+    "generate:env": "op inject --in-file .env.secret.template --out-file .env.secret",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -28,6 +29,7 @@
     "zenn-cli": "^0.1.153"
   },
   "devDependencies": {
+    "@anthropic-ai/sdk": "^0.19.1",
     "cspell": "^8.6.1",
     "cz-conventional-changelog": "^3.3.0",
     "lefthook": "^1.6.8",
