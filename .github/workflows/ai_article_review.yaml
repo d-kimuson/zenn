@@ -82,6 +82,8 @@ jobs:
                 $summary
 
                 $structure"
+              else
+                echo "記事の文字数が 100 未満のため、レビューを行いません。"
               fi
             fi
           done
