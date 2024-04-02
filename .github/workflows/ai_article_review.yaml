@@ -11,6 +11,7 @@ jobs:
 
     env:
       GH_TOKEN: ${{ github.token }}
+      PR_URL: ${{ github.event.pull_request.html_url }}
 
     steps:
       - uses: actions/checkout@v4
@@ -54,6 +55,7 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
+          set -eux
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             if [[ $file == articles/* ]]; then
               echo "$file のレビューを行います。"
