@@ -29,7 +29,10 @@
     "zenn-cli": "^0.1.153"
   },
   "devDependencies": {
+    "@actions/github": "^6.0.0",
     "@anthropic-ai/sdk": "^0.19.1",
+    "@octokit/rest": "^20.1.0",
+    "@octokit/types": "^13.1.0",
     "cspell": "^8.6.1",
     "cz-conventional-changelog": "^3.3.0",
     "lefthook": "^1.6.8",

@@ -49,38 +49,14 @@ jobs:
         uses: tj-actions/changed-files@v35
         with:
           files: articles/**
+          json: true
 
       - name: Review articles
         if: steps.changed-files.outputs.any_changed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            return await require('./.github/scripts/ai-review/index.cjs')({ github, context }, JSON.parse(${{ steps.changed-files.outputs.all_changed_files }}))
+          github-token: ${{ secrets.GITHUB_TOKEN }}
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: |
-          set -eux
-          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-            if [[ $file == articles/* ]]; then
-              echo "$file のレビューを行います。"
-
-              content=$(cat $file)
-              word_count=$(echo "$content" | wc -w)
-              if [ "$word_count" -gt 100 ]; then
-                review=$(node ./scripts/claude_review.mjs $file)
-
-                echo "$review" > review.json
-                cat review.json
-
-                summary=$(jq -r '.summary' review.json)
-                structure=$(jq -r '.structure' review.json)
-                details=$(jq -c '.details[]' review.json)
-
-                gh pr comment $PR_URL --body "$structure"
-
-                for detail in $details; do
-                  line=$(echo $detail | jq -r '.line')
-                  comment=$(echo $detail | jq -r '.comment')
-                  gh pr review $PR_URL --body "$comment" --comment --path $file --line $line
-                done
-              else
-                echo "記事の文字数が 100 未満のため、レビューを行いません。"
-              fi
-            fi
-          done
