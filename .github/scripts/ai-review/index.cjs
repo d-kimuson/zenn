@@ -91,15 +91,6 @@ module.exports = async ({ github, context }, changedFiles) => {
       return
     }
 
-    const review = await github.rest.pulls
-      .createReview({
-        owner: context.repo.owner,
-        repo: context.repo.repo,
-        pull_number: pr.number,
-        event: undefined, // => PENDING
-      })
-      .then((res) => res.data)
-
     await Promise.all([
       ...details.map((detail) =>
         github.rest.pulls.createReviewComment({
@@ -114,19 +105,14 @@ module.exports = async ({ github, context }, changedFiles) => {
       ),
     ])
 
-    await github.rest.request(
-      "POST /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}/events",
-      {
-        owner: "OWNER",
-        repo: "REPO",
+    const review = await github.rest.pulls
+      .createReview({
+        owner: context.repo.owner,
+        repo: context.repo.repo,
         pull_number: pr.number,
-        review_id: review.id,
-        body: structure,
         event: "COMMENT",
-        headers: {
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-      }
-    )
+        body: structure,
+      })
+      .then((res) => res.data)
   }
 }

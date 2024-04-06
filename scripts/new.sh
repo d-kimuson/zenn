@@ -34,4 +34,4 @@ git commit -m "新規記事追加: ${slug}"
 git push -u origin articles/${slug}
 
 # gh cli を使って Pull Request を作成する
-gh pr create --title "新規記事: ${title}" --body "この PR は新規記事 ${title} を追加します。" --base master --head articles/${slug}
+gh pr create --title "新規記事: ${title}" --body "この PR は新規記事 ${title} を追加します。" --base master --head articles/${slug} --draft

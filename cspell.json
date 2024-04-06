@@ -72,7 +72,8 @@
     "statel",
     "paroi",
     "commitizen",
-    "zenn"
+    "zenn",
+    "frontmatter"
   ],
   "ignorePaths": ["pnpm-lock.yaml", ".vscode/settings.json"]
 }
