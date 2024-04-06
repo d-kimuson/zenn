@@ -6,13 +6,6 @@ const anthropic = new Anthropic({
   apiKey: process.env["ANTHROPIC_API_KEY"],
 })
 
-/** @type {(indent: number, text: string) => string} */
-const dedent = (indent, text) =>
-  text
-    .split("\n")
-    .map((line) => line.slice(indent))
-    .join("\n")
-
 const systemPrompt = `
     以下は技術ブログ記事の原稿です。この記事をレビューし、以下の項目についてコメントを JSON 形式で出力してください。
     
@@ -35,17 +28,15 @@ const systemPrompt = `
     
     文字数を節約するため、簡潔なレビューを心がけてください。`
 
+const messageTemplate = `
+記事のレビューをお願いします。
+記事の原稿は以下の通りです
+---
+`
+
 /** @type {(content: string) => Promise<{ summary: string, structure: string, details: ReadonlyArray<{ line: number, comment: string }> }>} */
 const reviewArticle = async (content) => {
-  const message = dedent(
-    2,
-    `
-  記事のレビューをお願いします。
-  記事の原稿は以下の通りです
-  ---
-  ${content}
-  `
-  )
+  const message = messageTemplate + "\n" + content
 
   const result = await anthropic.messages.create({
     model: "claude-3-opus-20240229",
