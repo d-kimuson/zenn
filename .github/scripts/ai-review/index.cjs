@@ -34,7 +34,7 @@ const messageTemplate = `
 ---
 `
 
-/** @type {(content: string) => Promise<{ summary: string, structure: string, details: ReadonlyArray<{ line: number, comment: string }> }>} */
+/** @type {(content: string) => Promise<{ summary: string, structure: string, details?: ReadonlyArray<{ line: number, comment: string }> }>} */
 const reviewArticle = async (content) => {
   const message = messageTemplate + "\n" + content
 
@@ -77,7 +77,19 @@ module.exports = async ({ github, context }, changedFiles) => {
     console.log({
       summary,
       structure,
+      details,
     })
+
+    if (details === undefined || details.length === 0) {
+      await github.rest.pulls.createReview({
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        pull_number: pr.number,
+        event: "APPROVE",
+        body: structure,
+      })
+      return
+    }
 
     const review = await github.rest.pulls
       .createReview({
