@@ -2,8 +2,8 @@
 title: "docker compose でunhealthyまたは異常終了したサービスのログのみ出力するスクリプト"
 emoji: "😱"
 type: tech
-topics: []
-published: false
+topics: ["docker"]
+published: true
 ---
 
 ## なにがやりたいか
