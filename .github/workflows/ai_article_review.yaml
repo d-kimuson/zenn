@@ -50,6 +50,7 @@ jobs:
         with:
           files: articles/**
           json: true
+          json_raw_format: true
 
       - name: Review articles
         if: steps.changed-files.outputs.any_changed == 'true'
