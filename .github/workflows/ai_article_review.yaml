@@ -2,7 +2,7 @@ name: AI Article Review
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, ready_for_review, reopened]
 
 jobs:
   review:
