@@ -33,7 +33,7 @@ published: true
 
 [github-action-all-check-ci \| MIXI DEVELOPERS](https://mixi-developers.mixi.co.jp/github-action-all-check-ci-cad4d862f137)
 
-ただすべてのワークフローが完了するまで  wait するやり方だと GitHub Actions の GitHub Hosted Runner の課金はインスタンスの稼働時間に依存するため、すべて直列だと仮定すると単純計算で2倍、一部並列でもそれに近い比率で金額が伸びしてしまうことになります。
+ただすべてのワークフローが完了するまで wait するやり方だと GitHub Actions の GitHub Hosted Runner の課金はインスタンスの稼働時間に依存するため、すべて直列だと仮定すると単純計算で2倍、一部並列でもそれに近い比率で金額が伸びしてしまうことになります。
 
 常駐でオートスケールしない self-hosted runner を使っている場合や、全体の CI の実行時間が十分に短い場合等はインスタンス稼働時間が2倍近くになってもそれほど気にならないかもしれませんが、CIの実行時間がそこそこ長い、かつインスタンス稼働時間に応じて課金額が変わってくる仕組みの場合はこれだと困るので、そういった用途で使える後者の方針をこのエントリでは紹介します。
 
@@ -155,7 +155,7 @@ module.exports = async ({ github, context }) => {
 
 /** @typedef {'SUCCESS_ALL' | 'IN_PROGRESS' | 'FAILED_INPROGRESS' | 'FAILED_AND_COMPLETED' | 'CANCELED' | 'UNKNOWN'} CheckStatus */
 
-const SELF_JOB_NAME = 'check_if_all_job_finished'
+const SELF_JOB_NAME = "check_if_all_job_finished"
 /** @type {ReadonlyArray<string>} */
 const IGNORE_WORKFLOW_NAMES = []
 const PER_PAGE = 100
@@ -165,9 +165,9 @@ module.exports = async ({ github, context }) => {
   console.log(`Check For ${context.payload.workflow_run.path}`)
 
   const otherJobChecks = await fetchRuns(1).then(async (res) => {
-    const totalCount = res.data.total_count;
-    const runsPage1 = res.data.check_runs;
-    
+    const totalCount = res.data.total_count
+    const runsPage1 = res.data.check_runs
+
     // ページネーションされており1度に100件までしか取得できないので
     const allRuns = await Promise.all(
       Array.from({ length: Math.ceil(totalCount / PER_PAGE) - 1 })
@@ -180,53 +180,53 @@ module.exports = async ({ github, context }) => {
           ({ name }) =>
             name !== SELF_JOB_NAME && !IGNORE_WORKFLOW_NAMES.includes(name)
         )
-    );
+    )
 
-    return allRuns;
-  });
+    return allRuns
+  })
 
   const failedJobChecks = otherJobChecks.filter(
-    ({ conclusion }) => conclusion === 'failure' || conclusion === 'timed_out'
+    ({ conclusion }) => conclusion === "failure" || conclusion === "timed_out"
   )
 
   const notCompletedJobChecks = otherJobChecks.filter(
-    ({ status }) => status !== 'completed'
+    ({ status }) => status !== "completed"
   )
 
   /** @type {CheckStatus} */
   const status = (() => {
     if (failedJobChecks.length > 1) {
       // FAILED
-      if (notCompletedJobChecks.length === 0) return 'FAILED_AND_COMPLETED'
+      if (notCompletedJobChecks.length === 0) return "FAILED_AND_COMPLETED"
 
-      return 'FAILED_INPROGRESS'
+      return "FAILED_INPROGRESS"
     } else if (notCompletedJobChecks.length === 0) {
       // SUCCESS
       if (
         otherJobChecks.every(
           ({ conclusion }) =>
-            conclusion === 'success' ||
-            conclusion === 'skipped' ||
-            conclusion === 'action_required'
+            conclusion === "success" ||
+            conclusion === "skipped" ||
+            conclusion === "action_required"
         )
       ) {
-        return 'SUCCESS_ALL'
+        return "SUCCESS_ALL"
       }
 
-      if (otherJobChecks.some(({ conclusion }) => conclusion === 'cancelled'))
-        return 'CANCELED'
+      if (otherJobChecks.some(({ conclusion }) => conclusion === "cancelled"))
+        return "CANCELED"
 
-      console.log("otherJobChecks", otherJobChecks);
-      return 'UNKNOWN' // 完了はしているが想定していない conclusion が帰ってきている
+      console.log("otherJobChecks", otherJobChecks)
+      return "UNKNOWN" // 完了はしているが想定していない conclusion が帰ってきている
     } else {
       // INPROGRESS
 
-      console.log("notCompletedJobChecks", notCompletedJobChecks);
-      return 'IN_PROGRESS'
+      console.log("notCompletedJobChecks", notCompletedJobChecks)
+      return "IN_PROGRESS"
     }
   })()
 
-  console.log('status', status)
+  console.log("status", status)
   return status
 }
 ```

@@ -21,7 +21,7 @@ type Task = {
   description: string
 }
 
-const task: Task = JSON.parse('...') // any 型を返す関数に対して注釈を書く
+const task: Task = JSON.parse("...") // any 型を返す関数に対して注釈を書く
 task /* :task */ // 実際には any 以外の値でも Task 型についてしまう
 ```
 
@@ -123,12 +123,13 @@ export const isTask = (arg_0: unknown): arg_0 is Task =>
 ```ts
 // -a で追加で自動生成される
 function assertIsTask(value: unkonwn): asserts value is Task {
-  if (isTask(task)) throw new TypeError(`value must be Task but received ${value}`)
+  if (isTask(task))
+    throw new TypeError(`value must be Task but received ${value}`)
 }
 
 // 使用
-const json /* :any */ = await data.json();
-assertIsTask(json)  // 失敗した場合例外が発生する
+const json /* :any */ = await data.json()
+assertIsTask(json) // 失敗した場合例外が発生する
 json /* :Task */
 ```
 

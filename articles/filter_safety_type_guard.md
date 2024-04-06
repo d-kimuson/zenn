@@ -115,11 +115,12 @@ if (maybeUser === undefined) {
 const guardSymbol = Symbol()
 type GuardSymbol = typeof guardSymbol
 
-export const filterGuard = <Base, Ret extends Base | GuardSymbol>(
-  cb: (base: Base, exclude: GuardSymbol) => Ret
-): ((base: Base) => base is Exclude<Ret, GuardSymbol>) => (
-  base: Base
-): base is Exclude<Ret, GuardSymbol> => cb(base, guardSymbol) !== guardSymbol
+export const filterGuard =
+  <Base, Ret extends Base | GuardSymbol>(
+    cb: (base: Base, exclude: GuardSymbol) => Ret
+  ): ((base: Base) => base is Exclude<Ret, GuardSymbol>) =>
+  (base: Base): base is Exclude<Ret, GuardSymbol> =>
+    cb(base, guardSymbol) !== guardSymbol
 ```
 
 利用側は

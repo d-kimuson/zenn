@@ -97,7 +97,7 @@ export const counterModule = {
 
 ```ts
 const store = useStore()
-store.dispatch('INCREMENT') /* 引数にも戻り値にも型付けされない */
+store.dispatch("INCREMENT") /* 引数にも戻り値にも型付けされない */
 ```
 
 一番ここに型付けが欲しいと思うので、この辺りの型付けもなんとかしたいと思って vuex-typing を作りました
