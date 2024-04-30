@@ -121,12 +121,16 @@ pre-commit:
       glob: '*.{tsx,ts,mts,mcs,mjs,cjs,js,json,md,yml,yaml}'
       run: |
         pnpm prettier --write --ignore-unknown {staged_files}
-        git add {staged_files}
+      stage_fixed: true
+      skip:
+        - merge
+        - rebase
 ```
 
-- lint-staged と違って勝手に git add してくれないので明示的に書いて上げる必要がある
-  - 暗黙の挙動少ないの好き
+- lint-staged と違って勝手に git add してくれないので明示的に stage_fixed オプションを使って有効化する必要がある
 - add までするのかは好み分かれるかもしれないが、個人的には自動整形可能なものは eslint も prettier も基本的にはコードの意味には影響を与えず、行儀を良くするものがほとんどなので裏で修正していても良いと思うので追加している
+- merge・rebase するときにはほぼ無意味な大量のファイルにも prettier がかかってしまいオーバーヘッドが大きいので無効にしている
+  - prettier の設定値が変わったり、コンフリクトを解消したりすると実際には prettier をかけたほうが良いケースもあるが、9割型のケースでは時間の無駄になってしまうので飛ばしている。
 
 ### eslint
 
@@ -139,7 +143,10 @@ pre-commit:
       glob: '*.{tsx,ts,mts,mcs}'
       run: |
         pnpm --filter sample exec eslint --fix {staged_files}
-        git add {staged_files}
+      stage_fixed: true
+      skip:
+        - merge
+        - rebase
 ```
 
 - monorepo を想定してパッケージごとに書いたが、monorepo でないなら素直にルートに書いてあげれば良いだけ
