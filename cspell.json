@@ -73,7 +73,11 @@
     "paroi",
     "commitizen",
     "zenn",
-    "frontmatter"
+    "frontmatter",
+    "pushd",
+    "popd",
+    "tsup",
+    "toplevel"
   ],
   "ignorePaths": ["pnpm-lock.yaml", ".vscode/settings.json"]
 }
