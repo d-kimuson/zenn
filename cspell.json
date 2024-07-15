@@ -77,7 +77,8 @@
     "pushd",
     "popd",
     "tsup",
-    "toplevel"
+    "toplevel",
+    "sindresorhus"
   ],
   "ignorePaths": ["pnpm-lock.yaml", ".vscode/settings.json"]
 }
