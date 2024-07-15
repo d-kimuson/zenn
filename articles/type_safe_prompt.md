@@ -77,6 +77,8 @@ myPrompt.invoke({
 
 ## というわけで作った
 
+https://github.com/d-kimuson/type-safe-prompt
+
 npm からインストールできます。
 
 ```bash
